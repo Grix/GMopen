@@ -3,12 +3,22 @@
 
 #define GMEXPORT extern "C" __declspec (dllexport)
 
-static COLORREF get_colors[16];
+#define EVENT_OTHER_SOCIAL 70
 
-GMEXPORT double open_in_explorer(char* path);
-GMEXPORT double get_color_win(double c);
-GMEXPORT double show_message_win(char* message);
-GMEXPORT double show_question_win(char* message);
+static COLORREF getColors[16];
 
-void MessageBoxThreaded(char* message);
-wchar_t *convertCharArrayToLPCWSTR(char* charArray);
+GMEXPORT double OpenInExplorer(char* path);
+GMEXPORT double GetColor(double c);
+GMEXPORT double ShowMesssage(char* message, char* caption, double flags);
+GMEXPORT double ShowQuestion(char* message, char* caption, double flags);
+
+void ShowMessageThreaded(char* message, char* caption, unsigned int flags);
+void ShowQuestionThreaded(char* message, char* caption, unsigned int flags);
+wchar_t *ConvertCharArrayToLPCWSTR(char* charArray);
+
+void(*CreateAsynEventWithDSMap)(int, int);
+int(*CreateDsMap)(int _num, ...);
+bool(*DsMapAddDouble)(int _index, char *_pKey, double value);
+bool(*DsMapAddString)(int _index, char *_pKey, char *pVal);
+
+__declspec (dllexport) void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4);
