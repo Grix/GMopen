@@ -303,3 +303,6 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 GMopen/GMopen.v12.suo
+*.suo
+*.exp
+*.sdf

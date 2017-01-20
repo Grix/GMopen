@@ -21,4 +21,4 @@ int(*CreateDsMap)(int _num, ...);
 bool(*DsMapAddDouble)(int _index, char *_pKey, double value);
 bool(*DsMapAddString)(int _index, char *_pKey, char *pVal);
 
-__declspec (dllexport) void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4);
+GMEXPORT void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4);

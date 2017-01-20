@@ -62,9 +62,9 @@ wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
     return wString;
 }
 
-__declspec (dllexport) void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4)
+GMEXPORT void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4)
 {
-	//MessageBoxW(NULL, L"tesT", L"tesT", MB_OK);
+	MessageBoxW(NULL, L"tesT", L"tesT", MB_OK);
 	void(*CreateAsynEventWithDSMapPtr)(int, int) = (void(*)(int, int))(arg1);
 	int(*CreateDsMapPtr)(int _num, ...) = (int(*)(int _num, ...)) (arg2);
 	CreateAsynEventWithDSMap = CreateAsynEventWithDSMapPtr;
