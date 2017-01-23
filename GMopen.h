@@ -7,13 +7,15 @@
 
 static COLORREF getColors[16];
 
+int dialogId = 100;
+
 GMEXPORT double OpenInExplorer(char* path);
 GMEXPORT double GetColor(double c);
 GMEXPORT double ShowMesssage(char* message, char* caption, double flags);
 GMEXPORT double ShowQuestion(char* message, char* caption, double flags);
 
 void ShowMessageThreaded(char* message, char* caption, unsigned int flags);
-void ShowQuestionThreaded(char* message, char* caption, unsigned int flags);
+void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id);
 wchar_t *ConvertCharArrayToLPCWSTR(char* charArray);
 
 void(*CreateAsynEventWithDSMap)(int, int);

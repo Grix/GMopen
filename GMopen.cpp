@@ -28,9 +28,10 @@ GMEXPORT double ShowMessage(char* message, char* caption, double flags)
 
 GMEXPORT double ShowQuestion(char* message, char* caption, double flags)
 {
-	std::thread messageThread(ShowQuestionThreaded, message, caption, (unsigned int)(flags+0.5));
+	int id = dialogId++;
+	std::thread messageThread(ShowQuestionThreaded, message, caption, (unsigned int)(flags+0.5), id);
 	messageThread.detach();
-	return 1.;
+	return (double)id;
 }
 
 void ShowMessageThreaded(char* message, char* caption, unsigned int flags)
@@ -38,14 +39,13 @@ void ShowMessageThreaded(char* message, char* caption, unsigned int flags)
 	MessageBoxW(NULL, ConvertCharArrayToLPCWSTR(message), ConvertCharArrayToLPCWSTR(caption), MB_OK | flags);
 }
 
-void ShowQuestionThreaded(char* message, char* caption, unsigned int flags)
+void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id)
 {
-	MessageBoxW(NULL, ConvertCharArrayToLPCWSTR(message), ConvertCharArrayToLPCWSTR(caption), MB_YESNO | flags);
-
-	int my_map_index = CreateDsMap(0);
-	DsMapAddDouble(my_map_index, "another_number", 42);
-	DsMapAddString(my_map_index, "another_string", "hello, world");
-	CreateAsynEventWithDSMap(my_map_index, EVENT_OTHER_SOCIAL);
+	int result = MessageBoxW(NULL, ConvertCharArrayToLPCWSTR(message), ConvertCharArrayToLPCWSTR(caption), MB_YESNO | flags);
+	int resultMap = CreateDsMap(0);
+	DsMapAddDouble(resultMap, "id", (double)id);
+	DsMapAddDouble(resultMap, "status", (double)(result == IDYES));
+	CreateAsynEventWithDSMap(resultMap, EVENT_OTHER_SOCIAL);
 }
 
 wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
@@ -62,9 +62,9 @@ wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
     return wString;
 }
 
+//called automatically when GM loads the extension
 GMEXPORT void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4)
 {
-	MessageBoxW(NULL, L"tesT", L"tesT", MB_OK);
 	void(*CreateAsynEventWithDSMapPtr)(int, int) = (void(*)(int, int))(arg1);
 	int(*CreateDsMapPtr)(int _num, ...) = (int(*)(int _num, ...)) (arg2);
 	CreateAsynEventWithDSMap = CreateAsynEventWithDSMapPtr;
