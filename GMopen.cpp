@@ -57,9 +57,7 @@ GMEXPORT double FileExists(char* path)
 {
 	WIN32_FIND_DATAW FindFileData;
 	HANDLE handle = FindFirstFileW(ConvertCharArrayToRawLPCWSTR(path), &FindFileData);
-	int found = handle != INVALID_HANDLE_VALUE;
-	FindClose(handle);
-	if (found)
+	if (handle == INVALID_HANDLE_VALUE)
 		return 0.;
 	else
 		return 1.;
@@ -67,29 +65,20 @@ GMEXPORT double FileExists(char* path)
 
 wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
 {
-	int i;
-	for (i = 0; i < 4096; i++)
+	for (int i = 0; i < 4096; i++)
 	{
-		if (charArray[i] == '\0')
-			break;
-		else if (charArray[i] == '#')
+		if (charArray[i] == '#')
 			charArray[i] = '\n';
 	}
-    wchar_t* wString=new wchar_t[i];
-    MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i);
+	wchar_t* wString = new wchar_t[4096];
+	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
     return wString;
 }
 
 wchar_t *ConvertCharArrayToRawLPCWSTR(char* charArray)
 {
-	int i;
-	for (i = 0; i < 4096; i++)
-	{
-		if (charArray[i] == '\0')
-			break;
-	}
-	wchar_t* wString = new wchar_t[i];
-	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i);
+	wchar_t* wString = new wchar_t[4096];
+	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
 	return wString;
 }
 
