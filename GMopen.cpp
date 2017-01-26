@@ -2,7 +2,7 @@
 
 GMEXPORT double OpenInExplorer(char* path) 
 {
-	return (double)(int)ShellExecuteW(NULL, L"open", ConvertCharArrayToLPCWSTR(path), NULL, NULL, SW_SHOW);
+	return (double)(int)ShellExecuteW(NULL, L"open", ConvertCharArrayToRawLPCWSTR(path), NULL, NULL, SW_SHOW);
 }
 	
 GMEXPORT double GetColor(double c) { 
@@ -48,18 +48,49 @@ void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int 
 	CreateAsynEventWithDSMap(resultMap, EVENT_OTHER_SOCIAL);
 }
 
+GMEXPORT double FileCopy(char* source, char* dest)
+{
+	return (double)(CopyFileW(ConvertCharArrayToRawLPCWSTR(source), ConvertCharArrayToRawLPCWSTR(dest), false) == TRUE);
+}
+
+GMEXPORT double FileExists(char* path)
+{
+	WIN32_FIND_DATAW FindFileData;
+	HANDLE handle = FindFirstFileW(ConvertCharArrayToRawLPCWSTR(path), &FindFileData);
+	int found = handle != INVALID_HANDLE_VALUE;
+	FindClose(handle);
+	if (found)
+		return 0.;
+	else
+		return 1.;
+}
+
 wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
 {
-	for (int i = 0; i < 4096; i++)
+	int i;
+	for (i = 0; i < 4096; i++)
 	{
-		if (charArray[i] == '\n')
+		if (charArray[i] == '\0')
 			break;
 		else if (charArray[i] == '#')
 			charArray[i] = '\n';
 	}
-    wchar_t* wString=new wchar_t[4096];
-    MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
+    wchar_t* wString=new wchar_t[i];
+    MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i);
     return wString;
+}
+
+wchar_t *ConvertCharArrayToRawLPCWSTR(char* charArray)
+{
+	int i;
+	for (i = 0; i < 4096; i++)
+	{
+		if (charArray[i] == '\0')
+			break;
+	}
+	wchar_t* wString = new wchar_t[i];
+	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i);
+	return wString;
 }
 
 //called automatically when GM loads the extension
