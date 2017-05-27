@@ -94,29 +94,33 @@ GMEXPORT double FileExists(char* path)
 
 wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
 {
+	char newCharArray[2048];
+	memcpy(newCharArray, charArray, 2048);
 	int i = 0;
-	for (i = 0; i < 4096; i++)
+	for (i = 0; i < 2048; i++)
 	{
-		if (charArray[i] == '\0')
+		if (newCharArray[i] == '#')
+			newCharArray[i] = '\n';
+		else if (newCharArray[i] == '\0')
 			break;
-		if (charArray[i] == '#')
-			charArray[i] = '\n';
 	}
 	wchar_t* wString = new wchar_t[i+1];
-	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i + 1);
+	MultiByteToWideChar(CP_ACP, 0, newCharArray, -1, wString, i + 1);
     return wString;
 }
 
 wchar_t *ConvertCharArrayToRawLPCWSTR(char* charArray)
 {
+	char newCharArray[2048];
+	memcpy(newCharArray, charArray, 2048);
 	int i = 0;
-	for (i = 0; i < 4096; i++)
+	for (i = 0; i < 2048; i++)
 	{
-		if (charArray[i] == '\0')
+		if (newCharArray[i] == '\0')
 			break;
 	}
 	wchar_t* wString = new wchar_t[i+1];
-	MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, i+1);
+	MultiByteToWideChar(CP_ACP, 0, newCharArray, -1, wString, i + 1);
 	return wString;
 }
 
