@@ -1,3 +1,8 @@
+//Library of some windows-specific utilities for Game Maker
+//By Gitle Mikkelsen
+//version 1.2
+
+
 #include <Windows.h>
 #include <thread>
 
@@ -11,15 +16,12 @@ int dialogId = 100;
 
 GMEXPORT double OpenInExplorer(char* path);
 GMEXPORT double GetColor(double c);
-GMEXPORT double ShowMesssage(char* message, char* caption, double flags);
+GMEXPORT double ShowMessage(char* message, char* caption, double flags);
 GMEXPORT double ShowQuestion(char* message, char* caption, double flags);
 GMEXPORT double FileCopy(char* source, char* dest);
 
 void ShowMessageThreaded(char* message, char* caption, unsigned int flags);
 void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id);
-
-wchar_t *ConvertCharArrayToLPCWSTR(char* charArray);
-wchar_t *ConvertCharArrayToRawLPCWSTR(char* charArray);
 
 void(*CreateAsynEventWithDSMap)(int, int);
 int(*CreateDsMap)(int _num, ...);

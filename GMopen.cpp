@@ -1,12 +1,23 @@
+//Library of some windows-specific utilities for Game Maker
+//By Gitle Mikkelsen
+//version 1.2
+
+
 #include "GMopen.h"
 
 GMEXPORT double OpenInExplorer(char* path) 
 {
 	if (path == NULL)
 		return 0.;
-	wchar_t* pathw = ConvertCharArrayToRawLPCWSTR(path);
+
+	int pathLength = strlen(path);
+	wchar_t* pathw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, path, -1, pathw, pathLength);
+
 	int result = (int)ShellExecuteW(NULL, L"open", pathw, NULL, NULL, SW_SHOW);
+
 	delete pathw;
+
 	return (double)result;
 }
 	
@@ -46,20 +57,33 @@ GMEXPORT double ShowQuestion(char* message, char* caption, double flags)
 
 void ShowMessageThreaded(char* message, char* caption, unsigned int flags)
 {
-	wchar_t* msg = ConvertCharArrayToLPCWSTR(message);
-	wchar_t* cap = ConvertCharArrayToLPCWSTR(caption);
-	MessageBoxW(NULL, ConvertCharArrayToLPCWSTR(message), ConvertCharArrayToLPCWSTR(caption), MB_OK | flags);
-	delete msg;
-	delete cap;
+	int pathLength = strlen(message);
+	wchar_t* messagew = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
+	pathLength = strlen(caption);
+	wchar_t* captionw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
+
+	MessageBoxW(NULL, messagew, captionw, MB_OK | flags);
+
+	delete messagew;
+	delete captionw;
 }
 
 void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id)
 {
-	wchar_t* msg = ConvertCharArrayToLPCWSTR(message);
-	wchar_t* cap = ConvertCharArrayToLPCWSTR(caption);
-	int result = MessageBoxW(NULL, msg, cap, MB_YESNO | flags);
-	delete msg;
-	delete cap;
+	int pathLength = strlen(message);
+	wchar_t* messagew = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
+	pathLength = strlen(caption);
+	wchar_t* captionw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
+
+	int result = MessageBoxW(NULL, messagew, captionw, MB_YESNO | flags);
+
+	delete messagew;
+	delete captionw;
+
 	int resultMap = CreateDsMap(0);
 	DsMapAddDouble(resultMap, "id", (double)id);
 	DsMapAddDouble(resultMap, "status", (double)(result == IDYES));
@@ -70,11 +94,19 @@ GMEXPORT double FileCopy(char* source, char* dest)
 {
 	if ((source == NULL) || (dest == NULL))
 		return 0.;
-	wchar_t* sourcew = ConvertCharArrayToRawLPCWSTR(source);
-	wchar_t* destw = ConvertCharArrayToRawLPCWSTR(dest);
+
+	int pathLength = strlen(source);
+	wchar_t* sourcew = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, source, -1, sourcew, pathLength);
+	pathLength = strlen(dest);
+	wchar_t* destw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, dest, -1, destw, pathLength);
+
 	double result = (double)(CopyFileW(sourcew, destw, false) == TRUE);
+
 	delete sourcew;
 	delete destw;
+
 	return result;
 }
 
@@ -82,46 +114,20 @@ GMEXPORT double FileExists(char* path)
 {
 	if (path == NULL)
 		return 0.;
+
+	int pathLength = strlen(path);
+	wchar_t* pathw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, path, -1, pathw, pathLength);
+
 	WIN32_FIND_DATAW FindFileData;
-	wchar_t* pathw = ConvertCharArrayToRawLPCWSTR(path);
 	HANDLE handle = FindFirstFileW(pathw, &FindFileData);
+
 	delete pathw;
+
 	if (handle == INVALID_HANDLE_VALUE)
 		return 0.;
 	else
 		return 1.;
-}
-
-wchar_t *ConvertCharArrayToLPCWSTR(char* charArray)
-{
-	char newCharArray[2048];
-	memcpy(newCharArray, charArray, 2048);
-	int i = 0;
-	for (i = 0; i < 2048; i++)
-	{
-		if (newCharArray[i] == '#')
-			newCharArray[i] = '\n';
-		else if (newCharArray[i] == '\0')
-			break;
-	}
-	wchar_t* wString = new wchar_t[i+1];
-	MultiByteToWideChar(CP_ACP, 0, newCharArray, -1, wString, i + 1);
-    return wString;
-}
-
-wchar_t *ConvertCharArrayToRawLPCWSTR(char* charArray)
-{
-	char newCharArray[2048];
-	memcpy(newCharArray, charArray, 2048);
-	int i = 0;
-	for (i = 0; i < 2048; i++)
-	{
-		if (newCharArray[i] == '\0')
-			break;
-	}
-	wchar_t* wString = new wchar_t[i+1];
-	MultiByteToWideChar(CP_ACP, 0, newCharArray, -1, wString, i + 1);
-	return wString;
 }
 
 //called automatically when GM loads the extension
