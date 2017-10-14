@@ -5,12 +5,12 @@
 
 #include "GMopen.h"
 
-GMEXPORT double OpenInExplorer(char* path) 
+GMEXPORT double OpenInExplorer(const char* path)
 {
 	if (path == NULL)
 		return 0.;
 
-	int pathLength = strlen(path);
+	int pathLength = strlen(path) + 1;
 	wchar_t* pathw = new wchar_t[pathLength];
 	MultiByteToWideChar(CP_ACP, 0, path, -1, pathw, pathLength);
 
@@ -36,49 +36,51 @@ GMEXPORT double GetColor(double c) {
 		return c;
 }
 
-GMEXPORT double ShowMessage(char* message, char* caption, double flags)
+GMEXPORT double ShowMessage(const char* message, const char* caption, double flags)
 {
 	if ((message == NULL) || (caption == NULL))
 		return 0.;
-	std::thread messageThread(ShowMessageThreaded, message, caption, (unsigned int)(flags + 0.5));
+
+	int pathLength = strlen(message) + 1;
+	wchar_t* messagew = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
+	pathLength = strlen(caption) + 1;
+	wchar_t* captionw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
+
+	std::thread messageThread(ShowMessageThreaded, messagew, captionw, (unsigned int)(flags + 0.5));
 	messageThread.detach();
 	return 1.;
 }
 
-GMEXPORT double ShowQuestion(char* message, char* caption, double flags)
+GMEXPORT double ShowQuestion(const char* message, const char* caption, double flags)
 {
 	if ((message == NULL) || (caption == NULL))
 		return 0.;
 	int id = dialogId++;
-	std::thread messageThread(ShowQuestionThreaded, message, caption, (unsigned int)(flags+0.5), id);
+
+	int pathLength = strlen(message) + 1;
+	wchar_t* messagew = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
+	pathLength = strlen(caption) + 1;
+	wchar_t* captionw = new wchar_t[pathLength];
+	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
+
+	std::thread messageThread(ShowQuestionThreaded, messagew, captionw, (unsigned int)(flags+0.5), id);
 	messageThread.detach();
 	return (double)id;
 }
 
-void ShowMessageThreaded(char* message, char* caption, unsigned int flags)
+void ShowMessageThreaded(wchar_t* messagew, wchar_t* captionw, unsigned int flags)
 {
-	int pathLength = strlen(message);
-	wchar_t* messagew = new wchar_t[pathLength];
-	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
-	pathLength = strlen(caption);
-	wchar_t* captionw = new wchar_t[pathLength];
-	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
-
 	MessageBoxW(NULL, messagew, captionw, MB_OK | flags);
 
 	delete messagew;
 	delete captionw;
 }
 
-void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id)
+void ShowQuestionThreaded(wchar_t* messagew, wchar_t* captionw, unsigned int flags, int id)
 {
-	int pathLength = strlen(message);
-	wchar_t* messagew = new wchar_t[pathLength];
-	MultiByteToWideChar(CP_ACP, 0, message, -1, messagew, pathLength);
-	pathLength = strlen(caption);
-	wchar_t* captionw = new wchar_t[pathLength];
-	MultiByteToWideChar(CP_ACP, 0, caption, -1, captionw, pathLength);
-
 	int result = MessageBoxW(NULL, messagew, captionw, MB_YESNO | flags);
 
 	delete messagew;
@@ -90,15 +92,15 @@ void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int 
 	CreateAsynEventWithDSMap(resultMap, EVENT_OTHER_SOCIAL);
 }
 
-GMEXPORT double FileCopy(char* source, char* dest)
+GMEXPORT double FileCopy(const char* source, const char* dest)
 {
 	if ((source == NULL) || (dest == NULL))
 		return 0.;
 
-	int pathLength = strlen(source);
+	int pathLength = strlen(source) + 1;
 	wchar_t* sourcew = new wchar_t[pathLength];
 	MultiByteToWideChar(CP_ACP, 0, source, -1, sourcew, pathLength);
-	pathLength = strlen(dest);
+	pathLength = strlen(dest) + 1;
 	wchar_t* destw = new wchar_t[pathLength];
 	MultiByteToWideChar(CP_ACP, 0, dest, -1, destw, pathLength);
 
@@ -110,12 +112,12 @@ GMEXPORT double FileCopy(char* source, char* dest)
 	return result;
 }
 
-GMEXPORT double FileExists(char* path)
+GMEXPORT double FileExists(const char* path)
 {
 	if (path == NULL)
 		return 0.;
 
-	int pathLength = strlen(path);
+	int pathLength = strlen(path) + 1;
 	wchar_t* pathw = new wchar_t[pathLength];
 	MultiByteToWideChar(CP_ACP, 0, path, -1, pathw, pathLength);
 

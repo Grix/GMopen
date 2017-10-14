@@ -14,14 +14,14 @@ static COLORREF getColors[16];
 
 int dialogId = 100;
 
-GMEXPORT double OpenInExplorer(char* path);
+GMEXPORT double OpenInExplorer(const char* path);
 GMEXPORT double GetColor(double c);
-GMEXPORT double ShowMessage(char* message, char* caption, double flags);
-GMEXPORT double ShowQuestion(char* message, char* caption, double flags);
-GMEXPORT double FileCopy(char* source, char* dest);
+GMEXPORT double ShowMessage(const char* message, const char* caption, double flags);
+GMEXPORT double ShowQuestion(const char* message, const char* caption, double flags);
+GMEXPORT double FileCopy(const char* source, const char* dest);
 
-void ShowMessageThreaded(char* message, char* caption, unsigned int flags);
-void ShowQuestionThreaded(char* message, char* caption, unsigned int flags, int id);
+void ShowMessageThreaded(wchar_t* message, wchar_t* caption, unsigned int flags);
+void ShowQuestionThreaded(wchar_t* message, wchar_t* caption, unsigned int flags, int id);
 
 void(*CreateAsynEventWithDSMap)(int, int);
 int(*CreateDsMap)(int _num, ...);
