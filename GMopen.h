@@ -19,6 +19,7 @@ GMEXPORT double GetColor(double c);
 GMEXPORT double ShowMessage(const char* message, const char* caption, double flags);
 GMEXPORT double ShowQuestion(const char* message, const char* caption, double flags);
 GMEXPORT double FileCopy(const char* source, const char* dest);
+GMEXPORT double WindowMaximize(const char* handle);
 
 void ShowMessageThreaded(wchar_t* message, wchar_t* caption, unsigned int flags);
 void ShowQuestionThreaded(wchar_t* message, wchar_t* caption, unsigned int flags, int id);

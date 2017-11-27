@@ -132,6 +132,16 @@ GMEXPORT double FileExists(const char* path)
 		return 1.;
 }
 
+GMEXPORT double WindowMaximize(const char* handle)
+{
+	if (handle == NULL)
+		return 0.;
+
+	ShowWindow((HWND)handle, SW_MAXIMIZE);
+
+	return 1.;
+}
+
 //called automatically when GM loads the extension
 GMEXPORT void RegisterCallbacks(char *arg1, char *arg2, char *arg3, char *arg4)
 {
